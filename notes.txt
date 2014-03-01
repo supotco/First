@@ -1,0 +1,5 @@
+In order for the system to match this method to the method name given to android:onClick, the signature must be exactly as shown. Specifically, the method must:
+
+ - Be public
+ - Have a void return value
+ - Have a View as the only parameter (this will be the View that was clicked)
