@@ -8,7 +8,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.NavUtils;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,26 +29,69 @@ public class GraphicsActivity extends Activity {
 	}
 	
 	public class DrawView extends View {
+		DisplayMetrics dm;
 		
 		public DrawView(Context c)
 		{
 			super(c);
+			dm = new DisplayMetrics();
+			getWindowManager().getDefaultDisplay().getMetrics(dm);
 		}
 		
-		@Override public void onDraw(Canvas canvas)
+		@Override public void onDraw(final Canvas canvas)
 		{
 			super.onDraw(canvas);
+			
 			
 			// white screen
 			canvas.drawColor(Color.WHITE);
 			
 			// blue circle
-			Paint paint = new Paint();
+			final Paint paint = new Paint();
 			paint.setAntiAlias(true);
-			paint.setColor(Color.BLUE);
-			canvas.drawCircle(100, 100, 50, paint);
-			canvas.drawRect(300, 300, 600, 600, paint);
+			paint.setColor(Color.BLACK);
+			paint.setTextSize(40);
+			
+			int x = 1;
+			int y = 1;
+			
+			for (int i = 0; i < 20; i++) {
+				
+				drawBox(x, y, 400, canvas, paint);
+				System.out.println("Drawing");
+				x *= 2;
+				y *= 2;
+				paint.setStrokeWidth(paint.getStrokeWidth() + 1);
+			}
+					
+			
+			
+//			canvas.drawText("Width: " + dm.widthPixels, 50, 50, paint);
+//			canvas.drawText("Height: " + dm.heightPixels, 50, 100, paint);
+//			canvas.drawText("xdpi: " + dm.xdpi, 50, 150, paint);
+//			canvas.drawText("ydpi: " + dm.ydpi, 50, 200, paint);
+//			
+//			drawBox(500, 500, 400, canvas, paint);
+//			canvas.drawCircle(100, 100, 50, paint);
+//			canvas.drawRect(300, 300, 600, 600, paint);
+//			canvas.drawLine(500, 710, 1000, 250, paint);
 		}
+	}
+	
+	/**
+	 * Draws a box
+	 * @param x
+	 * @param y
+	 * @param r
+	 * @param canvas
+	 * @param paint
+	 */
+	public void drawBox(float x, float y, float r, Canvas canvas, Paint paint)
+	{
+		canvas.drawLine(x, y, x + r, y, paint);
+		canvas.drawLine(x, y, x, y + r, paint);
+		canvas.drawLine(x, y + r, x + r, y + r, paint);
+		canvas.drawLine(x + r, y, x + r, y + r, paint);
 	}
 
 	/**
