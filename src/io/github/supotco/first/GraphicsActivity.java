@@ -1,14 +1,18 @@
 package io.github.supotco.first;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.NavUtils;
 import android.util.DisplayMetrics;
 import android.view.Menu;
@@ -30,52 +34,40 @@ public class GraphicsActivity extends Activity {
 	
 	public class DrawView extends View {
 		DisplayMetrics dm;
+		Bitmap bm;
+		Canvas bufferCanvas;
+		Bitmap castle;
 		
-		public DrawView(Context c)
+		public DrawView(Context context)
 		{
-			super(c);
+			super(context);
 			dm = new DisplayMetrics();
 			getWindowManager().getDefaultDisplay().getMetrics(dm);
+			bm = Bitmap.createBitmap(dm.widthPixels, dm.heightPixels, Bitmap.Config.ARGB_8888);
+			bufferCanvas = new Canvas(bm);
+			castle = loadBitmap(context, "castle.png");
 		}
 		
 		@Override public void onDraw(final Canvas canvas)
 		{
-			super.onDraw(canvas);
-			
-			
-			// white screen
-			canvas.drawColor(Color.WHITE);
-			
-			// blue circle
-			final Paint paint = new Paint();
-			paint.setAntiAlias(true);
-			paint.setColor(Color.BLACK);
-			paint.setTextSize(40);
-			
-			int x = 1;
-			int y = 1;
-			
-			for (int i = 0; i < 20; i++) {
-				
-				drawBox(x, y, 400, canvas, paint);
-				System.out.println("Drawing");
-				x *= 2;
-				y *= 2;
-				paint.setStrokeWidth(paint.getStrokeWidth() + 1);
-			}
-					
-			
-			
-//			canvas.drawText("Width: " + dm.widthPixels, 50, 50, paint);
-//			canvas.drawText("Height: " + dm.heightPixels, 50, 100, paint);
-//			canvas.drawText("xdpi: " + dm.xdpi, 50, 150, paint);
-//			canvas.drawText("ydpi: " + dm.ydpi, 50, 200, paint);
-//			
-//			drawBox(500, 500, 400, canvas, paint);
-//			canvas.drawCircle(100, 100, 50, paint);
-//			canvas.drawRect(300, 300, 600, 600, paint);
-//			canvas.drawLine(500, 710, 1000, 250, paint);
+			canvas.drawBitmap(castle, 400,  400, null);
 		}
+	}
+	
+	public Bitmap loadBitmap(Context context, String file)
+	{
+		Bitmap bm = null;
+		try {
+		    AssetManager assets = context.getAssets();
+		    InputStream istream = assets.open(file);
+		    BitmapFactory.Options options = new BitmapFactory.Options();
+		    options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+		    bm = BitmapFactory.decodeStream(istream,null,options);
+		    istream.close();
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
+		return bm;
 	}
 	
 	/**
